@@ -31,16 +31,16 @@ body {
   font-weight: bold;
 }
 
-#question {
+#question, #highscores{
   margin-bottom: 20px;
 }
 
-#questionText {
+#questionText, #highscoresText {
   font-size: 24px;
   font-weight: bold;
 }
 
-#answers {
+#answers, #scores {
   display: flex;
   flex-direction: column;
 }

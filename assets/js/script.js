@@ -1,5 +1,8 @@
-const question = document.getElementById('questionText');
-const answers = document.querySelectorAll('.answer');
+const questionEl = document.getElementById('questionText');
+const answerBtns = document.querySelectorAll('.answer');
+const timerEl = document.getElementById('timer');
+let highScores = JSON.parse(localStorage.getItem('highscores'));
+let score;
 
 /*
    question: trivia question
@@ -110,27 +113,48 @@ const questions = [
 ];
 
 console.log(questions);
-console.log(question);
-console.log(answers);
+console.log(questionEl);
+console.log(answerBtns);
 
 
 function startGame() {
-    question.textContent = "Start game?";
-    answers[0].textContent = "Play";
-    answers[0].addEventListener('click', questionOne);
+    score = 0;
+    questionEl.textContent = "Start game?";
+    answerBtns[0].textContent = "Play";
+    answerBtns[0].addEventListener('click', questionOne);
 
-    for (i = 1; i < answers.length; i++) {
-        answers[i].style.visibility = "hidden";
-        console.log(answers[i]);
+    for (let i = 1; i < answerBtns.length; i++) {
+        answerBtns[i].style.display = "none";
+        console.log(answerBtns[i]);
     }
+}
+
+function startTimer() {
+    let time = 75;
+    timerEl.textContent = time;
+    const interval = setInterval(function() {
+        time--;
+        timerEl.textContent = time;
+
+        if (time === 0)
+        {
+            clearInterval(interval);
+            endGame();
+        }
+    }, 1000)
 }
 
 function questionOne(event) {
-    for (answer in answers) {
-        answer.display
-    }
-    console.log(event);
     event.target.removeEventListener('click', questionOne);
+    startTimer();
+    for (let i = 0; i < answerBtns.length; i++) {
+        answerBtns[i].style.display = 'inline-block';
+    }
+
+    console.log("test");
 }
 
+function endGame() {
+
+}
 startGame();
