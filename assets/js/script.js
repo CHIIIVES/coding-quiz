@@ -3,6 +3,7 @@ const answerBtns = document.querySelectorAll('.answer');
 const timerEl = document.getElementById('timer');
 let highScores = JSON.parse(localStorage.getItem('highscores'));
 let score;
+let time;
 
 /*
    question: trivia question
@@ -117,7 +118,7 @@ console.log(questionEl);
 console.log(answerBtns);
 
 
-function startGame() {
+function startPrompt() {
     score = 0;
     questionEl.textContent = "Start game?";
     answerBtns[0].textContent = "Play";
@@ -129,15 +130,14 @@ function startGame() {
     }
 }
 
-function startTimer() {
-    let time = 75;
+function playGame() {
+    time = 75;
     timerEl.textContent = time;
-    const interval = setInterval(function() {
+    const interval = setInterval(function () {
         time--;
         timerEl.textContent = time;
 
-        if (time === 0)
-        {
+        if (time === 0) {
             clearInterval(interval);
             endGame();
         }
@@ -157,4 +157,4 @@ function questionOne(event) {
 function endGame() {
 
 }
-startGame();
+startPrompt();

@@ -31,7 +31,17 @@ body {
   font-weight: bold;
 }
 
-#question, #highscores{
+.score {
+  font-size: 18px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+#highscores {
+  margin-bottom: 10px;
+}
+
+#question {
   margin-bottom: 20px;
 }
 
@@ -45,7 +55,7 @@ body {
   flex-direction: column;
 }
 
-.answer {
+.answer, #back {
   margin-bottom: 10px;
   padding: 10px 20px;
   font-size: 18px;
@@ -55,6 +65,8 @@ body {
   background-color: #4caf50;
   color: #fff;
   transition: background-color 0.3s;
+  text-align: center;
+  text-decoration: none;
 }
 
 .answer:hover {
