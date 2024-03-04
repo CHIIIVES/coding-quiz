@@ -6,9 +6,10 @@ let score;
 let time;
 
 /*
-   question: trivia question
-   answers: 4 possible answers for the question
-   Index: index of correct answer in answers
+    list of question object
+    question: trivia question
+    answers: 4 possible answers for the question
+    correct: index of correct answer in answers
 */
 const questions = [
     {
@@ -29,7 +30,7 @@ const questions = [
             "const",
             "int"
         ],
-        correct: 3
+        correct: 2
     },
     {
         question: "What does DOM stand for in JavaScript?",
@@ -113,48 +114,93 @@ const questions = [
     }
 ];
 
-console.log(questions);
-console.log(questionEl);
-console.log(answerBtns);
-
-
+// hide all but the play button
 function startPrompt() {
     score = 0;
+    time = 0;
     questionEl.textContent = "Start game?";
     answerBtns[0].textContent = "Play";
-    answerBtns[0].addEventListener('click', questionOne);
+    answerBtns[0].addEventListener('click', startGame);
 
     for (let i = 1; i < answerBtns.length; i++) {
         answerBtns[i].style.display = "none";
-        console.log(answerBtns[i]);
     }
 }
 
-function playGame() {
+// remove eventListener from "play" button
+// start timer
+// make all answer buttons visible
+function startGame(event) {
+    event.target.removeEventListener('click', startGame);
+    shuffleQuestions();
+    startTimer();
+    for (let i = 0; i < answerBtns.length; i++) {
+        answerBtns[i].style.display = 'inline-block';
+    }
+
+    displayQuestion(questions[0]);
+}
+
+function displayQuestion(question) {
+    const shuffledQuestion = shuffleAnswers(question);
+
+    questionEl.textContent = question.question;
+
+    for (let i = 0; i < shuffledQuestion.answers.length; i++) {
+        answerBtns[i].textContent = shuffledQuestion.answers[i];
+        if (i === shuffledQuestion.correct) {
+            answerBtns[i].dataset.correct = "true"
+        } else {
+            answerBtns[i].dataset.correct = "false"
+        }
+    }
+}
+
+function shuffleAnswers(question) {
+    const shuffledAnswers = question.answers.slice();
+    const correctIndex = question.correct;
+    for (let i = shuffledAnswers.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [shuffledAnswers[i], shuffledAnswers[j]] = [shuffledAnswers[j], shuffledAnswers[i]];
+    }
+
+    const newCorrect = shuffledAnswers.indexOf(question.answers[correctIndex]);
+
+    const shuffled = {
+        answers: shuffledAnswers,
+        correct: newCorrect
+    }
+
+    return shuffled;
+}
+
+function endGame() {
+    console.log("Game Over");
+
+
+}
+
+function startTimer() {
     time = 75;
     timerEl.textContent = time;
     const interval = setInterval(function () {
         time--;
         timerEl.textContent = time;
 
-        if (time === 0) {
+        if (time <= 0) {
             clearInterval(interval);
+            time = 0;
             endGame();
         }
     }, 1000)
 }
 
-function questionOne(event) {
-    event.target.removeEventListener('click', questionOne);
-    startTimer();
-    for (let i = 0; i < answerBtns.length; i++) {
-        answerBtns[i].style.display = 'inline-block';
+function shuffleQuestions() {
+    for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i+1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
     }
-
-    console.log("test");
 }
 
-function endGame() {
-
-}
+// start the game
 startPrompt();

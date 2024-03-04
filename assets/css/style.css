@@ -72,3 +72,22 @@ body {
 .answer:hover {
   background-color: #45a049;
 }
+
+.answer-input {
+  margin-bottom: 10px;
+  padding: 10px 20px;
+  font-size: 18px;
+  border: 2px solid #4caf50; /* Green border */
+  border-radius: 5px;
+  color: #333; /* Text color */
+  transition: border-color 0.3s; /* Add transition for border color */
+  outline: none; /* Remove default outline */
+}
+
+.answer-input::placeholder {
+  color: #777; /* Placeholder color */
+}
+
+.answer-input:focus {
+  border-color: #45a049; /* Darker green border on focus */
+}
