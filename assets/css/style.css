@@ -73,7 +73,7 @@ body {
   background-color: #45a049;
 }
 
-.answer-input {
+#initials-input {
   margin-bottom: 10px;
   padding: 10px 20px;
   font-size: 18px;
@@ -84,10 +84,10 @@ body {
   outline: none; /* Remove default outline */
 }
 
-.answer-input::placeholder {
+#initials-input::placeholder {
   color: #777; /* Placeholder color */
 }
 
-.answer-input:focus {
+#initials-input:focus {
   border-color: #45a049; /* Darker green border on focus */
 }

@@ -1,9 +1,13 @@
 const questionEl = document.getElementById('questionText');
 const answerBtns = document.querySelectorAll('.answer');
 const timerEl = document.getElementById('timer');
+const initialsEl = document.getElementById('initials-input');
+const answersDiv = document.getElementById('answers');
 let highScores = JSON.parse(localStorage.getItem('highscores'));
 let score;
 let time;
+let currentQuestion;
+let interval;
 
 /*
     list of question object
@@ -118,10 +122,11 @@ const questions = [
 function startPrompt() {
     score = 0;
     time = 0;
+    currentQuestion = 0;
     questionEl.textContent = "Start game?";
     answerBtns[0].textContent = "Play";
     answerBtns[0].addEventListener('click', startGame);
-
+    initialsEl.style.display = "none";
     for (let i = 1; i < answerBtns.length; i++) {
         answerBtns[i].style.display = "none";
     }
@@ -132,18 +137,49 @@ function startPrompt() {
 // make all answer buttons visible
 function startGame(event) {
     event.target.removeEventListener('click', startGame);
+    event.stopPropagation();
+    answersDiv.addEventListener('click', selectAnswer)
+    currentQuestion = 0;
     shuffleQuestions();
     startTimer();
     for (let i = 0; i < answerBtns.length; i++) {
         answerBtns[i].style.display = 'inline-block';
     }
 
-    displayQuestion(questions[0]);
+    getQuestion(questions[currentQuestion]);
 }
 
-function displayQuestion(question) {
-    const shuffledQuestion = shuffleAnswers(question);
+function selectAnswer(event) {
+    
+    const selected = event.target;
+    
+    console.log(event.target);
+    if (selected.tagName !== 'BUTTON') {
+        return;
+    }
+    if(selected.dataset.correct == "true") {
+        score += 10 + time;
+    } else {
+        time -= 10;
+        if (time < 0) {
+            time = 0;
+        }
 
+        timerEl.textContent = time;
+    }
+
+    currentQuestion++;
+
+    if (time <= 0 || currentQuestion === questions.length) {
+        endGame();
+    } else {
+        getQuestion(questions[currentQuestion]);
+    }
+}
+
+function getQuestion(question) {
+    const shuffledQuestion = shuffleAnswers(question);
+    console.log("display");
     questionEl.textContent = question.question;
 
     for (let i = 0; i < shuffledQuestion.answers.length; i++) {
@@ -174,25 +210,31 @@ function shuffleAnswers(question) {
     return shuffled;
 }
 
-function endGame() {
-    console.log("Game Over");
 
-
-}
 
 function startTimer() {
     time = 75;
     timerEl.textContent = time;
-    const interval = setInterval(function () {
+    interval = setInterval(function () {
         time--;
         timerEl.textContent = time;
 
         if (time <= 0) {
-            clearInterval(interval);
-            time = 0;
             endGame();
         }
     }, 1000)
+}
+
+function endGame() {
+    clearInterval(interval);
+    timerEl.textContent = "0";
+    console.log("Game Over");
+    displayInput();
+    console.log(score);
+}
+
+function displayInput() {
+
 }
 
 function shuffleQuestions() {
@@ -202,5 +244,4 @@ function shuffleQuestions() {
     }
 }
 
-// start the game
 startPrompt();
