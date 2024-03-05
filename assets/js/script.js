@@ -1,20 +1,18 @@
+// Retrieving DOM elements
 const questionEl = document.getElementById('questionText');
 const answerBtns = document.querySelectorAll('.answer');
 const timerEl = document.getElementById('timer');
 const initialsEl = document.getElementById('initials-input');
 const answersDiv = document.getElementById('answers');
+
+// Variables declaration
 let highScores = JSON.parse(localStorage.getItem('highscores'));
 let score;
 let time;
 let currentQuestion;
 let interval;
 
-/*
-    list of question object
-    question: trivia question
-    answers: 4 possible answers for the question
-    correct: index of correct answer in answers
-*/
+// Array of questions with their answers and correct index
 const questions = [
     {
         question: "What is the primary function of JavaScript?",
@@ -118,7 +116,37 @@ const questions = [
     }
 ];
 
-// hide all but the play button
+
+// Function to shuffle questions randomly
+function shuffleQuestions() {
+    for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i+1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+    }
+}
+
+// Function to shuffle answers for a given question
+function shuffleAnswers(question) {
+    const shuffledAnswers = question.answers.slice();
+    const correctIndex = question.correct;
+    for (let i = shuffledAnswers.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [shuffledAnswers[i], shuffledAnswers[j]] = [shuffledAnswers[j], shuffledAnswers[i]];
+    }
+
+    const newCorrect = shuffledAnswers.indexOf(question.answers[correctIndex]);
+
+    const shuffled = {
+        answers: shuffledAnswers,
+        correct: newCorrect
+    }
+
+    return shuffled;
+}
+
+
+
+// Function to display initial prompt and hide unnecessary elements
 function startPrompt() {
     score = 0;
     time = 0;
@@ -132,10 +160,9 @@ function startPrompt() {
     }
 }
 
-// remove eventListener from "play" button
-// start timer
-// make all answer buttons visible
+// Function to start the game
 function startGame(event) {
+    // Remove event listener and start game logic
     event.target.removeEventListener('click', startGame);
     event.stopPropagation();
     answersDiv.addEventListener('click', selectAnswer)
@@ -149,11 +176,9 @@ function startGame(event) {
     getQuestion(questions[currentQuestion]);
 }
 
+// Function to handle user selection of answer
 function selectAnswer(event) {
-    
     const selected = event.target;
-    
-    console.log(event.target);
     if (selected.tagName !== 'BUTTON') {
         return;
     }
@@ -177,10 +202,12 @@ function selectAnswer(event) {
     }
 }
 
+// Function to display a question
 function getQuestion(question) {
-    const shuffledQuestion = shuffleAnswers(question);
     console.log("display");
     questionEl.textContent = question.question;
+    
+    const shuffledQuestion = shuffleAnswers(question);
 
     for (let i = 0; i < shuffledQuestion.answers.length; i++) {
         answerBtns[i].textContent = shuffledQuestion.answers[i];
@@ -192,26 +219,7 @@ function getQuestion(question) {
     }
 }
 
-function shuffleAnswers(question) {
-    const shuffledAnswers = question.answers.slice();
-    const correctIndex = question.correct;
-    for (let i = shuffledAnswers.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [shuffledAnswers[i], shuffledAnswers[j]] = [shuffledAnswers[j], shuffledAnswers[i]];
-    }
-
-    const newCorrect = shuffledAnswers.indexOf(question.answers[correctIndex]);
-
-    const shuffled = {
-        answers: shuffledAnswers,
-        correct: newCorrect
-    }
-
-    return shuffled;
-}
-
-
-
+// Function to start the timer
 function startTimer() {
     time = 75;
     timerEl.textContent = time;
@@ -225,23 +233,56 @@ function startTimer() {
     }, 1000)
 }
 
+// Function to end the game
 function endGame() {
     clearInterval(interval);
     timerEl.textContent = "0";
+    for (let i = 1; i < answerBtns.length; i++) {
+        answerBtns[i].style.display = "none"
+    }
+    answersDiv.removeEventListener('click', selectAnswer);
     console.log("Game Over");
     displayInput();
     console.log(score);
 }
 
+// Function to display input for saving score
 function displayInput() {
+    console.log("display");
+    questionEl.textContent = `Your score: ${score}`
+    initialsEl.style.display = "inline-block";
+    answerBtns[0].textContent = "Sumbit Score";
 
+    answerBtns[0].addEventListener('click', saveScore);
+    initialsEl.addEventListener('keyup', function(event) {
+        if(event.key === 'Enter') {
+            saveScore();
+        }
+    })
 }
 
-function shuffleQuestions() {
-    for (let i = questions.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i+1));
-        [questions[i], questions[j]] = [questions[j], questions[i]];
+// Function to save score in local storage
+function saveScore() {
+    const initials = initialsEl.value.trim();
+
+    if (initials != '') {
+        const scores = JSON.parse(localStorage.getItem('players')) || [];
+        const player = {
+            name: initialsEl.value,
+            score: score
+        }
+
+        scores.push(player);
+
+        // Sort the scores based on the score value
+        scores.sort((a, b) => b.score - a.score);
+
+        // Update the local storage
+        localStorage.setItem('players', JSON.stringify(scores));
+
+        window.location.href = 'highscores.html';
     }
 }
 
+// Initial prompt to start the game
 startPrompt();
