@@ -204,7 +204,6 @@ function selectAnswer(event) {
 
 // Function to display a question
 function getQuestion(question) {
-    console.log("display");
     questionEl.textContent = question.question;
     
     const shuffledQuestion = shuffleAnswers(question);
@@ -241,14 +240,11 @@ function endGame() {
         answerBtns[i].style.display = "none"
     }
     answersDiv.removeEventListener('click', selectAnswer);
-    console.log("Game Over");
     displayInput();
-    console.log(score);
 }
 
 // Function to display input for saving score
 function displayInput() {
-    console.log("display");
     questionEl.textContent = `Your score: ${score}`
     initialsEl.style.display = "inline-block";
     answerBtns[0].textContent = "Submit Score";
