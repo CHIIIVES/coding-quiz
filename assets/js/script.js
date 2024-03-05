@@ -251,7 +251,7 @@ function displayInput() {
     console.log("display");
     questionEl.textContent = `Your score: ${score}`
     initialsEl.style.display = "inline-block";
-    answerBtns[0].textContent = "Sumbit Score";
+    answerBtns[0].textContent = "Submit Score";
 
     answerBtns[0].addEventListener('click', saveScore);
     initialsEl.addEventListener('keyup', function(event) {
